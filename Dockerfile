@@ -27,6 +27,8 @@ ADD scripts/run.sh /
 
 RUN apt-get clean
 
+RUN mkdir -p /var/run/kea/ /var/kea/ 
+
 EXPOSE 67 67/udp 547 547/udp 647 647/udp 847 847/udp
 
 ENTRYPOINT ["/run.sh"]
