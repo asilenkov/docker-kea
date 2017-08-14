@@ -29,9 +29,9 @@ RUN apt-get clean
 
 RUN mkdir -p /var/run/kea/ /var/kea/ 
 
-EXPOSE 67 67/udp 547 547/udp 647 647/udp 847 847/udp
+EXPOSE 67 67/udp 547 547/udp 647 647/udp 847 847/udp 8686
 
 ENTRYPOINT ["/run.sh"]
-CMD ["/usr/sbin/kea-dhcp4","-c","/etc/kea/kea-dhcp4.conf"]
+CMD ["/usr/sbin/kea-dhcp4","-c","/etc/kea/kea-dhcp4.conf","&& ","/usr/sbin/kea-ctrl-agent", "-c", "/etc/kea/kea-ca.conf"]
 VOLUME ["/etc/kea","/var/lib/kea"]
 WORKDIR /etc/kea
