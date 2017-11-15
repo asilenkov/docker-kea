@@ -9,7 +9,7 @@ RUN apt-get update
 
 RUN apt-get install -y libboost-system1.62.0 libgcc1 libstdc++6 \
                        liblog4cplus-1.1-9 libmariadbclient18 libpq5 \
-                       libssl1.1 zlib1g
+                       libssl1.1 zlib1g curl jq
 
 ADD debs /opt/debs
 
@@ -24,6 +24,10 @@ RUN apt-get -y dist-upgrade \
   && apt-get clean
 
 ADD scripts/run.sh /
+
+ADD files/id_rsa /etc/kea/id_rsa
+ADD files/kea-hook-runscript.so /etc/kea/kea-hook-runscript.sh
+ADD files/napi.sh /etc/kea/napi.sh
 
 RUN apt-get clean
 
