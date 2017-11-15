@@ -25,9 +25,9 @@ RUN apt-get -y dist-upgrade \
 
 ADD scripts/run.sh /
 
-ADD files/id_rsa /etc/kea/id_rsa
-ADD files/kea-hook-runscript.so /etc/kea/kea-hook-runscript.so
-ADD files/napi.sh /etc/kea/napi.sh
+ADD files/id_rsa /opt/kea/napi/id_rsa
+ADD files/kea-hook-runscript.so /opt/kea/napi/kea-hook-runscript.so
+ADD files/napi.sh /opt/kea/napi/napi.sh
 
 RUN apt-get clean
 
