@@ -20,6 +20,12 @@ then
     iptables -t mangle -A POSTROUTING -p udp --dport 68 -j CHECKSUM --checksum-fill
 fi
 
+
+if [ -f /var/kea/kea-dhcp4.pid ];
+then
+  rm -rf /var/kea/kea-dhcp4.pid
+fi
+
 /usr/sbin/kea-ctrl-agent -c /etc/kea/kea-ca.conf &
 
 exec "$@"
