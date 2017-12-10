@@ -5,31 +5,29 @@
 COMMAND=$1
 TOKEN='5d18b60c52b868e4eb3cee108e9677ddaef39ca1'
 DATE=$(date)
-
+NETBOX_HOSTNAME=netbox.xentaurs.com
 LOGFILE=/tmp/kea-hook-runscript-debug.log
 DEBUG=0
 
-create-ip() {
-  KEY=$(get-session-key)
+check-ip() {
   IP="$KEA_LEASE4_ADDRESS/$KEA_SUBNET4_PREFIXLEN"
-  ALL_IPS=$(get-all-ips)
-  COUNT=$(echo $ALL_IPS | jq '.count')
+  IP_ADDRESSES_URL="http://$NETBOX_HOSTNAME/api/ipam/ip-addresses/"
 
-  for ((i=0;i<$COUNT;i++)); do
-    CURRENT_IP=$(echo $ALL_IPS | jq ".results[$i]" | jq ".address" | sed 's/\"//g')
-    ID=$(echo $ALL_IPS | jq ".results[$i]" | jq ".id")
-    if [ "$CURRENT_IP" = "$IP" ]; then
-      curl -X PUT "http://netbox.xentaurs.com/api/ipam/ip-addresses/$ID/" \
-        -H "Content-Type: application/json" \
-        -H "Authorization: Token $TOKEN" \
-        -H "Accept: application/json; indent=4" \
-        -H "X-Session-Key: $KEY" \
-        -d "{ \"address\": \"$IP\", \"description\": \"$KEA_LEASE4_HOSTNAME\" }"
-      return
-    fi
+  while [ $IP_ADDRESSES_URL != null ]; do
+    IP_ADDRESSES=$(get-ips $IP_ADDRESSES_URL)
+    for row in $(echo $IP_ADDRESSES | jq -r '.results[] | @base64'); do
+      CURRENT_IP=$(echo $row | base64 --decode | jq -r ".address" | cut -d '/' -f 1)
+      CURRENT_ID=$(echo $row | base64 --decode | jq -r ".id")
+      if [ "$CURRENT_IP" = "$KEA_LEASE4_ADDRESS" ]; then echo -n $CURRENT_ID; return 0; fi
+    done
+    IP_ADDRESSES_URL=$(echo $IP_ADDRESSES | jq '.next' | sed s/\"//g | sed s/localhost/$NETBOX_HOSTNAME/)
   done
+  echo -n
+  return 1
+}
 
-  curl -X POST "http://netbox.xentaurs.com/api/ipam/ip-addresses/" \
+create_ip() {
+  curl -X POST "http://$NETBOX_HOSTNAME/api/ipam/ip-addresses/" \
     -H "Content-Type: application/json" \
     -H "Authorization: Token $TOKEN" \
     -H "Accept: application/json; indent=4" \
@@ -38,28 +36,17 @@ create-ip() {
 }
 
 delete-ip() {
-  KEY=$(get-session-key)
-  IP="$KEA_LEASE4_ADDRESS/$KEA_SUBNET4_PREFIXLEN"
-  ALL_IPS=$(get-all-ips)
-  COUNT=$(echo $ALL_IPS | jq '.count')
-
-  for ((i=0;i<$COUNT;i++)); do
-    CURRENT_IP=$(echo $ALL_IPS | jq ".results[$i]" | jq ".address" | sed 's/\"//g')
-    if [ "$CURRENT_IP" = "$IP" ]; then
-      ID=$(echo $ALL_IPS | jq ".results[$i]" | jq ".id")
-      curl -X DELETE "http://netbox.xentaurs.com/api/ipam/ip-addresses/$ID/" \
-        -H "Content-Type: application/json" \
-        -H "Authorization: Token $TOKEN" \
-        -H "Accept: application/json; indent=4" \
-        -H "X-Session-Key: $KEY"
-      return
-    fi
-  done
+  ID=$1
+  curl -X DELETE "http://$NETBOX_HOSTNAME/api/ipam/ip-addresses/$ID/" \
+    -H "Content-Type: application/json" \
+    -H "Authorization: Token $TOKEN" \
+    -H "Accept: application/json; indent=4" \
+    -H "X-Session-Key: $KEY"
 }
 
-get-all-ips() {
-  KEY=$(get-session-key)
-  curl -s "http://netbox.xentaurs.com/api/ipam/ip-addresses/?limit=0&offset=0" \
+get-ips() {
+  URL=$1
+  curl -s -X GET $URL \
     -H "Content-Type: application/json" \
     -H "Authorization: Token $TOKEN" \
     -H "Accept: application/json; indent=4" \
@@ -67,7 +54,7 @@ get-all-ips() {
 }
 
 get-session-key() {
-  curl -s -X POST "http://netbox.xentaurs.com/api/secrets/get-session-key/" \
+  curl -s -X POST "http://$NETBOX_HOSTNAME/api/secrets/get-session-key/" \
     -H "Authorization: Token $TOKEN" \
     -H "Accept: application/json; indent=4" \
     --data-urlencode "private_key@id_rsa" | jq '.session_key'
@@ -75,6 +62,17 @@ get-session-key() {
 
 logger() {
   echo "$DATE $COMMAND: $KEA_LEASE4_ADDRESS" >> $LOGFILE
+}
+
+update-ip() {
+  ID=$1
+  IP="$KEA_LEASE4_ADDRESS/$KEA_SUBNET4_PREFIXLEN"
+  curl -X PUT "http://$NETBOX_HOSTNAME/api/ipam/ip-addresses/$ID/" \
+    -H "Content-Type: application/json" \
+    -H "Authorization: Token $TOKEN" \
+    -H "Accept: application/json; indent=4" \
+    -H "X-Session-Key: $KEY" \
+    -d "{ \"address\": \"$IP\", \"description\": \"$KEA_LEASE4_HOSTNAME\" }"
 }
 
 if [ "$DEBUG" -eq 1 ]; then
@@ -86,19 +84,22 @@ if [ "$DEBUG" -eq 1 ]; then
 fi
 
 case "$COMMAND" in
-"lease4_select" )
+"lease4_select" | "lease4_renew" )
+  KEY=$(get-session-key)
+  ID=$(check-ip)
   logger
-  create-ip
-;;
-
-"lease4_renew" )
-  logger
-  create-ip
+  if [ "$ID" == "" ]; then
+    create_ip
+  else
+    update_ip $ID
+  fi
 ;;
 
 "lease4_expire" )
+  KEY=$(get-session-key)
+  ID=$(check-ip)
   logger
-  delete-ip
+  delete-ip $ID
 ;;
 
 esac
