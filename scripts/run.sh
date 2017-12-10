@@ -21,9 +21,9 @@ then
 fi
 
 
-if [ -f /var/kea/kea-dhcp4.pid ];
+if [ -f /var/kea/kea-dhcp4.kea-dhcp4.pid ];
 then
-  rm -rf /var/kea/kea-dhcp4.pid
+  rm -rf /var/kea/kea-dhcp4.kea-dhcp4.pid
 fi
 
 /usr/sbin/kea-ctrl-agent -c /etc/kea/kea-ca.conf &
