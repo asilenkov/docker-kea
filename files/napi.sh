@@ -26,7 +26,7 @@ check-ip() {
   return 1
 }
 
-create_ip() {
+create-ip() {
   curl -X POST "http://$NETBOX_HOSTNAME/api/ipam/ip-addresses/" \
     -H "Content-Type: application/json" \
     -H "Authorization: Token $TOKEN" \
@@ -89,9 +89,9 @@ case "$COMMAND" in
   ID=$(check-ip)
   logger
   if [ "$ID" == "" ]; then
-    create_ip
+    create-ip
   else
-    update_ip $ID
+    update-ip $ID
   fi
 ;;
 
