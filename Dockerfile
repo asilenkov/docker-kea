@@ -13,6 +13,8 @@ RUN apt-get install -y libboost-system1.62.0 libgcc1 libstdc++6 \
 
 ADD debs /opt/debs
 
+RUN rm -rf /opt/debs/debian
+
 RUN cd /opt/debs ; dpkg -i *
 
 RUN rm -rf /opt/debs
