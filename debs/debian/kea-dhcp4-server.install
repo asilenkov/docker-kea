@@ -1,0 +1,4 @@
+usr/sbin/kea-dhcp4
+usr/share/man/man8/kea-dhcp4.8
+debian/kea-dhcp4.conf             etc/kea
+usr/share/kea/dhcp4.spec          usr/share/kea-dhcp4-server

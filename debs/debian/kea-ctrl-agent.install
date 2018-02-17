@@ -1,0 +1,3 @@
+usr/share/man/man8/kea-ctrl-agent.8
+usr/sbin/kea-ctrl-agent
+debian/kea-ctrl-agent.conf       etc/kea

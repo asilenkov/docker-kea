@@ -1,0 +1,13 @@
+[Unit]
+Description=ISC KEA DDNS Service
+Documentation=man:kea-dhcp-ddns(8)
+Wants=network-online.target
+After=network-online.target
+After=time-sync.target
+
+[Service]
+ExecStart=/usr/sbin/kea-dhcp-ddns -c /etc/kea/kea-dhcp-ddns.conf
+
+[Install]
+WantedBy=kea-dhcpv4-server.service
+WantedBy=kea-dhcpv6-server.service

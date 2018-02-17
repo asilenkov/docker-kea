@@ -1,0 +1,6 @@
+usr/share/doc/kea/kea-guide.txt        usr/share/doc/kea-doc/
+usr/share/doc/kea/kea-guide.html       usr/share/doc/kea-doc/html/
+usr/share/doc/kea/kea-guide.css        usr/share/doc/kea-doc/html/
+usr/share/doc/kea/kea-messages.html    usr/share/doc/kea-doc/html/
+usr/share/doc/kea/kea-logo*            usr/share/doc/kea-doc/html/
+usr/share/doc/kea/examples/*           usr/share/doc/kea-doc/examples/

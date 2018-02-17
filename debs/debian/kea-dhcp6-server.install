@@ -1,0 +1,4 @@
+usr/sbin/kea-dhcp6
+usr/share/man/man8/kea-dhcp6.8
+debian/kea-dhcp6.conf            etc/kea
+usr/share/kea/dhcp6.spec         usr/share/kea-dhcp6-server

@@ -1,0 +1,3 @@
+usr/share/man/man8/kea-admin.8
+usr/sbin/kea-admin
+usr/share/kea/scripts/admin-utils.sh

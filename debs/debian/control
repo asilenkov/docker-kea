@@ -1,0 +1,90 @@
+Source: isc-kea
+Section: net
+Priority: extra
+Maintainer: Adam Majer <adamm@zombino.com>
+Build-Depends: debhelper (>= 9), autotools-dev, liblog4cplus-dev,
+               libboost-dev, libboost-system-dev, bison, flex,
+               default-libmysqlclient-dev, libpq-dev, python3-dev, elinks,
+               postgresql-server-dev-all, libssl-dev,
+               xsltproc, docbook, docbook-xsl
+Standards-Version: 3.9.7
+Homepage: http://kea.isc.org/
+Vcs-Git: git://anonscm.debian.org/collab-maint/isc-kea.git
+Vcs-Browser: https://anonscm.debian.org/gitweb/?p=collab-maint/isc-kea.git;a=summary
+
+Package: kea-dhcp4-server
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, kea-common (= ${binary:Version})
+Suggests: kea-doc
+Description: ISC KEA IPv4 DHCP server
+ KEA is an IPv4 and IPv6 DHCP server developed by Internet Systems Consortium
+ providing a very high-performance with PostgreSQL, MySQL and memfile backends.
+ .
+ This package provides the IPv4 DHCP server.
+
+Package: kea-dhcp6-server
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, kea-common (= ${binary:Version})
+Suggests: kea-doc
+Description: ISC KEA IPv6 DHCP server
+ KEA is an IPv4 and IPv6 DHCP server developed by Internet Systems Consortium
+ providing a very high-performance with PostgreSQL, MySQL and memfile backends.
+ .
+ This package provides the IPv6 DHCP server.
+
+Package: kea-dhcp-ddns-server
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, kea-common (= ${binary:Version})
+Suggests: kea-doc
+Description: ISC KEA DHCP Dynamic DNS service
+ KEA is an IPv4 and IPv6 DHCP server developed by Internet Systems Consortium.
+ .
+ This package provides Dynamic DNS service to update DNS mapping based on 
+ DHCP lease events.
+
+Package: kea-doc
+Architecture: all
+Section: doc
+Depends: ${misc:Depends}
+Description: Documentation for ISC KEA DHCP server
+ KEA is an IPv4 and IPv6 DHCP server developed by Internet Systems Consortium.
+ .
+ This package provides documentation for the DHCP servers.
+
+Package: kea-admin
+Architecture: any
+Section: admin
+Depends: ${shlibs:Depends}, ${misc:Depends}, kea-common (= ${binary:Version})
+Description: Administration utilities for ISC KEA DHCP server
+ KEA is an IPv4 and IPv6 DHCP server developed by Internet Systems Consortium.
+ .
+ This package provides backend database initialization and migration
+ scripts and a DHCP benchmark tool.
+
+Package: kea-dev
+Architecture: any
+Section: devel
+Depends: ${shlibs:Depends}, ${misc:Depends}, kea-common (= ${binary:Version})
+Description: Development headers for ISC KEA DHCP server
+ KEA is an IPv4 and IPv6 DHCP server developed by Internet Systems Consortium.
+ .
+ This package provides headers and static libraries of the common ISC KEA
+ libraries, including libdhcp++
+
+Package: kea-common
+Architecture: any
+Section: libs
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: Common libraries for the ISC KEA DHCP server
+ KEA is an IPv4 and IPv6 DHCP server developed by Internet Systems Consortium.
+ .
+ This package provides common libraries used by ISC KEA servers and utilities.
+
+Package: kea-ctrl-agent
+Architecture: any
+Section: agent
+Depends: ${shlibs:Depends}, ${misc:Depends}, kea-common (= ${binary:Version})
+Description: Control agent for ISC KEA DHCP server
+ KEA is an IPv4 and IPv6 DHCP server developed by Internet Systems Consortium.
+ .
+ This package provides control agent daemon for KEA DHCP server.
